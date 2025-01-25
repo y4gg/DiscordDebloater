@@ -1,5 +1,5 @@
 # MuteDiscord
-Mute all of your discord servers!
+Mute all discord servers that annoy you!
 
 This is a simple python script that will mute all of your Discord servers!
 Modes:
