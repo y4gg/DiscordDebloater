@@ -21,7 +21,7 @@ Run this command:
 ```
 python3 app.py
 ```
-# How to setup config
+# How to setup config (Optional)
 ### Step 1
 Navigate into the directory where app.py is, and create a file called config.json
 ### Step 2
