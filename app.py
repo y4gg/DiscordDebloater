@@ -1,4 +1,4 @@
-import requests, time
+import requests, time, sys
 
 # token
 dc_token = input("Enter your Discord token: ")
@@ -7,7 +7,7 @@ headers = {
     "Authorization": dc_token
 }
 
-def get_server_ids():
+def get_servers():
     try:
 
         url = "https://discordapp.com/api/users/@me/guilds"
@@ -57,9 +57,24 @@ def mute_all():
     with open("server_ids.txt", "r") as f:
         server_ids = [line.strip() for line in f]
         
-    for server_id in server_ids:
+    total = len(server_ids)
+    start_time = time.time()
+    for i, server_id in enumerate(server_ids, 1):
         mute_server(server_id)
+        
+        progress = i / total
+        bar_length = 40
+        block = int(round(bar_length * progress))
+
+        elapsed_time = time.time() - start_time
+        avg_time_per_item = elapsed_time / i
+        remaining_time = avg_time_per_item * (total - i)
+
+        text = f"\rProgress: [{'#' * block + '-' * (bar_length - block)}] {i}/{total} | Time left: {remaining_time:.1f}s > "
+        sys.stdout.write(text)
+        sys.stdout.flush()
         time.sleep(1)
+    print()
 
 def prompt_mute_servers():
     with open("server_names.txt", "r", encoding="utf-8") as names_file, \
@@ -85,5 +100,5 @@ def prompt_mute_servers():
                 else:
                     print("Invalid input. Please enter y/yes, n/no, or a/all")
 
-get_server_ids()
+get_servers()
 prompt_mute_servers()
