@@ -1,7 +1,6 @@
-import requests, time, sys
+import requests, time, sys, getpass
 
-# token
-dc_token = input("Enter your Discord token: ")
+dc_token = getpass.getpass(prompt="Discord Token: ")
 
 headers = {
     "Authorization": dc_token
