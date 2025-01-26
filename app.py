@@ -25,7 +25,6 @@ def get_servers():
         server_ids = [guild["id"] for guild in guilds_data]
         server_names = [guild["name"] for guild in guilds_data]
         
-        print("Successfully fetched server IDs and names.")
         return server_ids, server_names
     except requests.exceptions.RequestException as e:
         print(f"Error fetching data: {e}")
@@ -88,7 +87,7 @@ def prompt_mute_servers():
         server_id = server_id.strip()
         
         while True:
-            response = input(f"Do you want to mute {name}? (y)es / (n)o / (a)ll: ").lower()
+            response = input(f"Do you want to mute {name}? (y)es / (n)o / (a)ll / (c)ancel: ").lower()
             
             if response in ['y', 'yes']:
                 mute_server(server_id, name)
@@ -98,7 +97,137 @@ def prompt_mute_servers():
             elif response in ['a', 'all']:
                 mute_all(server_ids, server_names)
                 return
+            elif response in ['c', 'cancel']:
+                actions()
+                break
             else:
                 print("Invalid input. Please enter y/yes, n/no, or a/all")
 
-prompt_mute_servers()
+def prompt_leave_servers():
+    server_ids, server_names = get_servers()
+    
+    for name, server_id in zip(server_names, server_ids):
+        name = name.strip()
+        server_id = server_id.strip()
+        
+        while True:
+            response = input(f"Do you want to leave {name}? (y)es / (n)o / (a)ll / (c)ancel: ").lower()
+            
+            if response in ['y', 'yes']:
+                leave_server(server_id, name)
+                break
+            elif response in ['n', 'no']:
+                break
+            elif response in ['a', 'all']:
+                leave_all(server_ids, server_names)
+                return
+            elif response in ['c', 'cancel']:
+                return
+            else:
+                print("Invalid input. Please enter y/yes, n/no, a/all, or c/cancel")
+
+def leave_server(server_id, server_name):
+    url = "https://discord.com/api/v9/users/@me/guilds/" + server_id
+    payload = {
+        "lurking": False
+    }
+    
+    try:
+        response = requests.delete(url, headers=headers, json=payload)
+        response.raise_for_status()
+        return(f"Successfully left {server_name} ({server_id})")
+    except requests.exceptions.RequestException as e:
+        return(f"Error leaving server {server_name} ({server_id}): {e}")
+
+def leave_all(server_ids, server_names):
+    total = len(server_ids)
+    start_time = time.time()
+    last_text_length = 0
+    
+    for i, (server_id, server_name) in enumerate(zip(server_ids, server_names), 1):
+        status = leave_server(server_id, server_name)
+        
+        progress = i / total
+        bar_length = 40
+        block = int(round(bar_length * progress))
+
+        elapsed_time = time.time() - start_time
+        avg_time_per_item = elapsed_time / i
+        remaining_time = avg_time_per_item * (total - i)
+
+        text = f"\rProgress: [{'#' * block + '-' * (bar_length - block)}] {i}/{total} | Time left: {remaining_time:.1f}s > {status}"
+
+        if len(text) < last_text_length:
+            text += ' ' * (last_text_length - len(text))
+
+        last_text_length = len(text)
+        
+        sys.stdout.write(text)
+        sys.stdout.flush()
+        time.sleep(1)
+    print()
+
+def select_mode():
+    print("\n\n")
+    print("Mute Dbloader\n")
+    print("Select mode:")
+    print("1. Actions")
+    print("2. Stats")
+    print("3. Save Token")
+    print("4. Exit")
+    
+    while True:
+        mode = input("Enter mode: ").strip().lower()
+
+        if mode in ['1', 'actions']:
+            actions()
+            break
+        elif mode in ['2', 'stats']:
+            stats()
+            break
+        elif mode in ['3', 'config']:
+            create_config()
+            break
+        elif mode in ['4', 'exit']:
+            print("Exiting...")
+            break
+        else:
+            print("Invalid input. Please enter 1/actions, 2/stats, 3/config, or 4/exit")
+
+def stats():
+    server_ids, server_names = get_servers()
+    print("\nYour servers:")
+    for i, name in enumerate(server_names, 1):
+        print(f"{i}. {name}")
+    print()
+    input("Press enter to leave...")
+    select_mode()
+
+def create_config():
+    config = {
+        "dc_token": dc_token
+    }
+    with open("config.json", "w") as f:
+        json.dump(config, f, indent=4)
+
+def actions():
+    print("1. Mute servers")
+    print("2. Leave Servers")
+    print("3. Back")
+
+    while True:
+        action = input("Enter action: ").strip().lower()
+
+        if action in ['1', 'mute servers']:
+            prompt_mute_servers()
+            break
+        elif action in ['2', 'leave servers']:
+            prompt_leave_servers()
+            break
+        elif action in ['3', 'back']:
+            select_mode()
+            break
+        else:
+            print("Invalid input. Please enter 1/mute servers, 2/leave servers, or 3/back")
+
+select_mode()
