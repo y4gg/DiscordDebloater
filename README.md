@@ -21,16 +21,3 @@ Run this command:
 ```
 python3 app.py
 ```
-# How to setup config (Optional)
-### Step 1
-Navigate into the directory where app.py is, and create a file called config.json
-### Step 2
-Paste following contents into the file:
-```
-{
-  "dc_token":"<Token>"
-}
-```
-and replace <Token> with your discord token
-### Step 3
-Save and run python file.
