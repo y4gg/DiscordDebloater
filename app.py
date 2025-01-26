@@ -2,12 +2,40 @@ import requests, time, sys, pwinput, os, json
 
 def config():
     if not os.path.exists("config.json"):
-        dc_token = pwinput.pwinput(prompt="Discord Token: ")
+        config = {"accounts": []}
     else:
         with open("config.json", "r") as f:
             config = json.load(f)
-            dc_token = config["dc_token"]
-    return dc_token
+    
+    if not config.get("accounts"):
+        account_name = input("Enter account name: ").strip()
+        dc_token = pwinput.pwinput(prompt="Discord Token: ")
+        config["accounts"] = [{"name": account_name, "dc_token": dc_token}]
+        with open("config.json", "w") as f:
+            json.dump(config, f, indent=4)
+        return dc_token
+    
+    # Account selection
+    print("\nAvailable accounts:")
+    for i, account in enumerate(config["accounts"], 1):
+        print(f"{i}. {account['name']}")
+    print("n. Add new account")
+    
+    while True:
+        choice = input("Select account (number) or 'n' for new: ").strip().lower()
+        
+        if choice == 'n':
+            account_name = input("Enter account name: ").strip()
+            dc_token = pwinput.pwinput(prompt="Discord Token: ")
+            config["accounts"].append({"name": account_name, "dc_token": dc_token})
+            with open("config.json", "w") as f:
+                json.dump(config, f, indent=4)
+            return dc_token
+        elif choice.isdigit() and 0 < int(choice) <= len(config["accounts"]):
+            selected = config["accounts"][int(choice) - 1]
+            return selected["dc_token"]
+        else:
+            print("Invalid selection. Please try again.")
 
 dc_token = config()
 
@@ -173,7 +201,7 @@ def select_mode():
     print("Select mode:")
     print("1. Actions")
     print("2. Stats")
-    print("3. Save Token")
+    print("3. Account Selector")
     print("4. Exit")
     
     while True:
@@ -186,7 +214,7 @@ def select_mode():
             stats()
             break
         elif mode in ['3', 'config']:
-            create_config()
+            config()
             break
         elif mode in ['4', 'exit']:
             print("Exiting...")
@@ -202,13 +230,6 @@ def stats():
     print()
     input("Press enter to leave...")
     select_mode()
-
-def create_config():
-    config = {
-        "dc_token": dc_token
-    }
-    with open("config.json", "w") as f:
-        json.dump(config, f, indent=4)
 
 def actions():
     print("1. Mute servers")
