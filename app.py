@@ -49,9 +49,7 @@ def get_servers():
         response.raise_for_status()
         
         guilds_data = response.json()
-        # Save response for debugging
-        with open("guilds_debug.json", "w") as f:
-            json.dump(guilds_data, f, indent=4)
+        
         server_ids = [guild["id"] for guild in guilds_data]
         server_names = [guild["name"] for guild in guilds_data]
         
@@ -67,8 +65,6 @@ def get_friends():
         response.raise_for_status()
         
         friends_data = response.json()
-        with open("friends_debug.json", "w") as f:
-            json.dump(friends_data, f, indent=4)
         friend_ids = [friend["user"]["id"] for friend in friends_data]
         friend_users = [friend["user"]["username"] for friend in friends_data]
         friend_names = [friend["user"]["global_name"] for friend in friends_data]
@@ -86,8 +82,6 @@ def get_channels():
         
         channels_data = response.json()
     
-        with open("channels_debug.json", "w") as f:
-            json.dump(channels_data, f, indent=4)
         channel_ids = [channel["id"] for channel in channels_data]
         channels_users = [channel["recipients"][0]["username"] for channel in channels_data]
         channel_names = [channel["recipients"][0]["global_name"] for channel in channels_data]
