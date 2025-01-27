@@ -140,6 +140,8 @@ def mute_all(server_ids, server_names):
         time.sleep(1)
     print()
 
+    actions()
+
 def prompt_mute_servers():
     server_ids, server_names = get_servers()
         
@@ -164,6 +166,8 @@ def prompt_mute_servers():
             else:
                 print("Invalid input. Please enter y/yes, n/no, or a/all")
 
+    actions()
+
 def prompt_leave_servers():
     server_ids, server_names = get_servers()
     
@@ -186,6 +190,7 @@ def prompt_leave_servers():
                 return
             else:
                 print("Invalid input. Please enter y/yes, n/no, a/all, or c/cancel")
+    actions()
 
 def prompt_close_dm():
     chennel_ids, channel_users, channel_names = get_channels()
@@ -209,9 +214,11 @@ def prompt_close_dm():
                 close_all(chennel_ids)
                 return
             elif response in ['c', 'cancel']:
-                return
+                actions()
+                break
             else:
                 print("Invalid input. Please enter y/yes, n/no, a/all, or c/cancel")
+    actions()
                 
 def close_dm(channel_id):
     url = f"https://discord.com/api/v9/channels/{channel_id}"
@@ -250,11 +257,16 @@ def close_all(cnannel_ids):
         time.sleep(1)
     print()
 
+    actions()
+
 def prompt_unfriend():
     friend_ids, freind_users, friend_names = get_friends()
     
-    for name, friend_id in zip(friend_names, friend_ids):
-        name = name.strip()
+    for name, friend_user, friend_id in zip(friend_names, freind_users, friend_ids):
+        if name == None:
+            name = friend_user
+        else:
+            name = name.strip()
         friend_id = friend_id.strip()
         
         while True:
@@ -269,9 +281,11 @@ def prompt_unfriend():
                 unfriend_all(friend_ids)
                 return
             elif response in ['c', 'cancel']:
-                return
+                actions()
+                break
             else:
                 print("Invalid input. Please enter y/yes, n/no, a/all, or c/cancel")
+    actions()
 
 def unfriend(friend_id):
     url = "https://discord.com/api/v9/users/@me/relationships/" + friend_id
@@ -402,7 +416,7 @@ def stats():
 def actions():
     print("1. Mute servers")
     print("2. Leave Servers")
-    print("3. Cloase DM's")
+    print("3. Close DM's")
     print("4. Unfriend")
     print("5. Back")
 
