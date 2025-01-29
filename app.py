@@ -17,7 +17,7 @@ def config():
     
     print("\nAvailable accounts:")
     for i, account in enumerate(config["accounts"], 1):
-        print(f"{i}. {account['name']}")
+        print(f" {i}. {account['name']}")
     print("n. Add new account")
     
     while True:
@@ -367,7 +367,7 @@ def leave_all(server_ids, server_names):
     print()
 
 def select_mode():
-    print("\n\n")
+    print("\n")
     print("Discord Debloater")
     print("Select mode:")
     print(" 1. Actions")
@@ -414,11 +414,11 @@ def stats():
     select_mode()
 
 def actions():
-    print("1. Mute servers")
-    print("2. Leave Servers")
-    print("3. Close DM's")
-    print("4. Unfriend")
-    print("5. Back")
+    print(" 1. Mute servers")
+    print(" 2. Leave Servers")
+    print(" 3. Close DM's")
+    print(" 4. Unfriend")
+    print(" 5. Back")
 
     while True:
         action = input("Enter action: ").strip().lower()
