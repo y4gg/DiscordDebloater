@@ -1,3 +1,5 @@
+# Warning:
+This reposetory has been replaced by https://github.com/y4gg/dc-cleaner-web. Don't ask me for support.
 # Discord Debloater
 A simple python tool to debloat your discord account.
 # ⭐Features⭐
